@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body,html{
+            margin:0;
+            padding:0;
+        }
+
+
+
+    </style>
+    <script src="bower_components/modernizr/modernizr.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+
+    <script>
+        // get references to the canvas and context
+        //document.addEventListener('DOMContentLoaded', function () {
+        $(function () {
+
+
+            var img=new Image();
+            img.src="http://www.designsnext.com/wp-content/uploads/2014/04/nature-wallpapers-16.jpg";
+
+            img.onload = function() {
+                var canvas = document.getElementById("canvas");
+                console.log(canvas);
+                var context = canvas.getContext("2d");
+                context.drawImage(img,0,0,300,300);
+
+                // style the context
+                context.strokeStyle = "blue";
+               // context.lineWidth = 3;
+
+
+
+                var isDown = false;
+
+                // these vars will hold the starting mouse position
+                var startX;
+                var startY;
+
+
+                function handleMouseDown(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // save the starting x/y of the rectangle
+                    startX = parseInt(e.clientX);
+                    startY = parseInt(e.clientY);
+
+                    // set a flag indicating the drag has begun
+                    isDown = true;
+                }
+
+                function handleMouseUp(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // the drag is over, clear the dragging flag
+                    isDown = false;
+                    var width = mouseX - startX;
+                    var height = mouseY - startY;
+                    var canvas=document.getElementById("canvas");
+                    var dest= document.getElementById("container");
+                    var context=dest.getContext("2d");
+                    console.log(startX, startY, width, height);
+                    context.drawImage(canvas,startX, startY, width, height,0,0,300,300);
+                }
+
+                function handleMouseOut(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // the drag is over, clear the dragging flag
+                    isDown = false;
+                }
+
+                function handleMouseMove(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // if we're not dragging, just return
+                    if (!isDown) {
+                        return;
+                    }
+
+                    // get the current mouse position
+                    mouseX = parseInt(e.clientX);
+                    mouseY = parseInt(e.clientY);
+
+
+                    // calculate the rectangle width/height based
+                    // on starting vs current mouse position
+                    var width = mouseX - startX;
+                    var height = mouseY - startY;
+
+                    // draw a new rect from the start position
+                    // to the current mouse position
+
+                    context.drawImage(img,0,0,300,300);
+                    //context.clearRect(startX, startY, width, height);
+
+                    context.strokeRect(startX, startY, width, height);
+
+                }
+
+                // listen for mouse events
+                $("#canvas").mousedown(function (e) {
+                    handleMouseDown(e);
+                });
+                $("#canvas").mousemove(function (e) {
+                    handleMouseMove(e);
+                });
+                $("#canvas").mouseup(function (e) {
+                    handleMouseUp(e);
+                });
+              /*  $("#canvas").mouseout(function (e) {
+                    handleMouseOut(e);
+                });*/
+            }
+        })
+
+    </script>
+</head>
+<body>
+<canvas id="canvas" width=300 height=300></canvas>
+<canvas id="container" height="300" width="300" ></canvas>
+</body>
+</html>

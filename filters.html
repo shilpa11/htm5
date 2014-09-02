@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+
+        #button1{
+            float:left;
+            margin:10px;
+
+
+
+        }
+
+        #reset{
+            float:left;
+            margin:10px;
+
+
+        }
+
+        div#container{
+
+            float:left;
+        }
+
+        canvas#base{
+            margin:60px;
+
+
+        }
+    </style>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script>
+        $(function () {
+
+
+
+        var canvas = $("#base")[0];
+        console.log(canvas);
+        var img = new Image();
+        img.src="nature-wallpaper-27.jpg";
+        var context = canvas.getContext("2d");
+        img.onload= function () {
+            context.drawImage(img,0,0);
+
+            $("#button1").click(function (event) {
+                var img_data = context.getImageData(0,0, canvas.width, canvas.height);
+
+                var red, blue, green, gr, threshold;
+
+                threshold=30;
+
+
+                for(var i=0;i<img_data.data.length;i+=4){
+                    red = img_data.data[i];
+                    blue = img_data.data[i+1];
+                    green = img_data.data[i+2];
+                    gr = 0.2126*red + 0.7152 * green + 0.0722 * blue;
+                    img_data.data[i] = img_data.data[i+1] = img_data.data[i+2] =gr > threshold ? 255 :0;
+                }
+
+                context.putImageData(img_data,0,0);
+            });
+
+
+            $("#reset").click(function (event) {
+                context.drawImage(img,0,0);
+
+            })
+
+        }
+
+        });
+
+    </script>
+</head>
+<body>
+<div id="container">
+<canvas id="base" width="300" height="300"></canvas>
+
+<button id="button1">Grayscale</button>
+<button id="reset">Reset</button>
+
+</div>
+
+</body>
+</html>
